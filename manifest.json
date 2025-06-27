@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Employee Salary Updater",
+  "version": "1.0",
+  "description": "Uploads an Excel file and updates salary on your company website.",
+  "permissions": ["scripting", "activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png"
+    }
+  },
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
