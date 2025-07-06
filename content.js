@@ -1,10 +1,14 @@
-window.addEventListener("message", function (event) {
-  if (event.source !== window || !event.data || event.data.type !== "EXCEL_DATA") return;
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  // Ensure the message is the one we're looking for
+  if (message.type !== "EXCEL_DATA") {
+    return true; // Ignore other messages but keep channel open for other listeners
+  }
 
-  const excelData = event.data.payload;
+  const excelData = message.payload;
   if (!Array.isArray(excelData) || excelData.length < 2) {
-    alert("Invalid Excel format");
-    return;
+    // Send an error response back to the popup
+    sendResponse({ error: "Invalid Excel format. Make sure there is at least a header and one data row." });
+    return true;
   }
 
   const header = excelData[0];
@@ -12,8 +16,8 @@ window.addEventListener("message", function (event) {
   const incrementIndex = header.findIndex(h => h && h.toString().toLowerCase().includes("present daily salary"));
 
   if (empNoIndex === -1 || incrementIndex === -1) {
-    alert("Employee ID or Present Daily Salary column not found in Excel.");
-    return;
+    sendResponse({ error: "Employee ID or Present Daily Salary column not found in Excel." });
+    return true;
   }
 
   const bodyRows = excelData.slice(1);
@@ -21,7 +25,10 @@ window.addEventListener("message", function (event) {
   const missingEmpIds = [];
 
   bodyRows.forEach(row => {
-    const excelEmpId = String(row[empNoIndex]).trim();
+    // Make sure the row itself is an array
+    if (!Array.isArray(row)) return;
+
+    const excelEmpId = String(row[empNoIndex] || '').trim();
     const incrementValue = row[incrementIndex];
 
     if (!excelEmpId || incrementValue === undefined || incrementValue === "") return;
@@ -30,6 +37,9 @@ window.addEventListener("message", function (event) {
     let matched = false;
 
     allRows.forEach(rowEl => {
+      // Check if we have already found a match for this excelEmpId
+      if (matched) return;
+      
       const cells = rowEl.querySelectorAll("td");
       if (cells.length < 3) return;
 
@@ -37,15 +47,20 @@ window.addEventListener("message", function (event) {
 
       if (webEmpId === excelEmpId) {
         const inputs = rowEl.querySelectorAll("input");
+        let inputFoundAndUpdated = false;
         inputs.forEach(input => {
           const inputName = input.getAttribute("name") || "";
           if (inputName.startsWith("increment_amount[")) {
             input.value = incrementValue;
             input.style.backgroundColor = "#d0ffd0";
-            updatedCount++;
-            matched = true;
+            inputFoundAndUpdated = true;
           }
         });
+        
+        if (inputFoundAndUpdated) {
+            updatedCount++; // Increment only once per matched employee row
+            matched = true;
+        }
       }
     });
 
@@ -54,22 +69,12 @@ window.addEventListener("message", function (event) {
     }
   });
 
-  let message = ✅ ${updatedCount} employee(s) updated successfully.;
+  // Send the results back to the popup script
+  sendResponse({
+    updatedCount: updatedCount,
+    missingEmpIds: missingEmpIds
+  });
 
-  if (missingEmpIds.length > 0) {
-    message += \n\n❌ ${missingEmpIds.length} ID(s) not found on the website:\n;
-    message += missingEmpIds.join(", ");
-
-    navigator.clipboard.writeText(missingEmpIds.join(", "))
-      .then(() => {
-        message += \n\n📋 Missing IDs copied to clipboard.;
-        alert(message);
-      })
-      .catch(() => {
-        message += \n\n⚠️ Failed to copy missing IDs.;
-        alert(message);
-      });
-  } else {
-    alert(message);
-  }
+  // IMPORTANT: Return true to indicate that sendResponse will be called asynchronously.
+  return true;
 });
