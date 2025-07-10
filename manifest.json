@@ -1,6 +1,5 @@
 {
   "manifest_version": 3,
-<<<<<<< HEAD
   "name": "Salary Updater by Tanvir",
   "version": "1.2",
   "description": "Uploads an Excel file to update salary fields on a webpage.",
@@ -21,27 +20,10 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-=======
-  "name": "Employee Salary Updater",
-  "version": "1.1",
-  "description": "Uploads an Excel file and updates salary on your company website.",
-  "permissions": ["scripting", "activeTab"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icon.png"
-    }
-  },
-  "host_permissions": ["<all_urls>"],
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
   ]
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
