@@ -12,6 +12,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   }
 
   const header = excelData[0];
+<<<<<<< HEAD
 
   // ========================= MODIFICATION START =========================
   // We will now search for a list of possible keywords to support multiple templates.
@@ -44,6 +45,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         errorMessage += 'Missing: "Present Daily Salary" column.';
     }
     sendResponse({ error: errorMessage });
+=======
+  const empNoIndex = header.findIndex(h => h && h.toString().toLowerCase().includes("employee id"));
+  const incrementIndex = header.findIndex(h => h && h.toString().toLowerCase().includes("present daily salary"));
+
+  if (empNoIndex === -1 || incrementIndex === -1) {
+    sendResponse({ error: "Employee ID or Present Daily Salary column not found in Excel." });
+>>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
     return true;
   }
 
@@ -104,4 +112,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
   // IMPORTANT: Return true to indicate that sendResponse will be called asynchronously.
   return true;
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
