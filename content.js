@@ -12,46 +12,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   }
 
   const header = excelData[0];
-<<<<<<< HEAD
-
-  // ========================= MODIFICATION START =========================
-  // We will now search for a list of possible keywords to support multiple templates.
-  
-  const empIdKeywords = ["employee id", "emp id"]; // Keywords for Employee ID
-  const salaryKeywords = ["present daily salary", "daily salary", "বর্তমান মজুরী"]; // Keywords for Salary
-
-  // Reusable function to find a column index based on a list of keywords
-  const findIndexByKeywords = (headerRow, keywords) => {
-    return headerRow.findIndex(h => {
-      if (!h) return false;
-      const lowerCaseHeader = h.toString().toLowerCase();
-      // Check if the header cell contains ANY of our keywords
-      return keywords.some(keyword => lowerCaseHeader.includes(keyword));
-    });
-  };
-
-  const empNoIndex = findIndexByKeywords(header, empIdKeywords);
-  const incrementIndex = findIndexByKeywords(header, salaryKeywords);
-  
-  // ========================== MODIFICATION END ==========================
-
-
-  if (empNoIndex === -1 || incrementIndex === -1) {
-    let errorMessage = "Could not find required columns in Excel.\n";
-    if (empNoIndex === -1) {
-        errorMessage += 'Missing: "Employee ID" column.\n';
-    }
-    if (incrementIndex === -1) {
-        errorMessage += 'Missing: "Present Daily Salary" column.';
-    }
-    sendResponse({ error: errorMessage });
-=======
   const empNoIndex = header.findIndex(h => h && h.toString().toLowerCase().includes("employee id"));
   const incrementIndex = header.findIndex(h => h && h.toString().toLowerCase().includes("present daily salary"));
 
   if (empNoIndex === -1 || incrementIndex === -1) {
     sendResponse({ error: "Employee ID or Present Daily Salary column not found in Excel." });
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
     return true;
   }
 
@@ -112,8 +77,4 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
   // IMPORTANT: Return true to indicate that sendResponse will be called asynchronously.
   return true;
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3

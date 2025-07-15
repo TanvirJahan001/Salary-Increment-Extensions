@@ -8,11 +8,7 @@ const statusContainer = document.getElementById("status-container");
 // --- Process Button Event Listener ---
 processBtn.addEventListener("click", () => {
   if (!fileInput.files || fileInput.files.length === 0) {
-<<<<<<< HEAD
-    updateStatus("❌ Please select an Excel file first.", "error");
-=======
     updateStatus(" Please select an Excel file first.", "error");
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
     return;
   }
 
@@ -29,11 +25,7 @@ processBtn.addEventListener("click", () => {
     // Send data to the active tab's content script
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs.length === 0 || !tabs[0].id) {
-<<<<<<< HEAD
-        updateStatus("❌ Could not find an active tab. Please ensure you are on a webpage.", "error");
-=======
         updateStatus(" Could not find an active tab. Please ensure you are on a webpage.", "error");
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
         return;
       }
       
@@ -49,11 +41,7 @@ processBtn.addEventListener("click", () => {
   };
 
   reader.onerror = function() {
-<<<<<<< HEAD
-    updateStatus("❌ Error reading the file.", "error");
-=======
     updateStatus(" Error reading the file.", "error");
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
   };
 
   reader.readAsArrayBuffer(file);
@@ -70,11 +58,7 @@ copyBtn.addEventListener("click", () => {
         }, 2000); // Reset text after 2 seconds
       })
       .catch(() => {
-<<<<<<< HEAD
-        updateStatus("⚠️ Failed to copy IDs.", "error");
-=======
         updateStatus(" Failed to copy IDs.", "error");
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
       });
   }
 });
@@ -84,11 +68,7 @@ function handleResponse(response) {
   // chrome.runtime.lastError is set if the content script did not respond.
   if (chrome.runtime.lastError || !response) {
     updateStatus(
-<<<<<<< HEAD
-      "❌ Failed to communicate with the page.\n\nAre you on the correct website? Please refresh the page and try again.", 
-=======
       " Failed to communicate with the page.\n\nAre you on the correct website? Please refresh the page and try again.", 
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
       "error"
     );
     return;
@@ -96,28 +76,17 @@ function handleResponse(response) {
   
   // Check for a specific error message from the content script
   if (response.error) {
-<<<<<<< HEAD
-    updateStatus(`❌ ${response.error}`, "error");
-=======
     updateStatus(` ${response.error}`, "error");
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
     return;
   }
 
   const { updatedCount, missingEmpIds } = response;
   lastMissingIds = missingEmpIds || []; // Update the global variable
 
-<<<<<<< HEAD
-  let message = `✅ ${updatedCount} employee(s) updated successfully.`;
-
-  if (lastMissingIds.length > 0) {
-    message += `\n\n❌ ${lastMissingIds.length} ID(s) not found on the website.`;
-=======
   let message = ` ${updatedCount} employee(s) updated successfully.`;
 
   if (lastMissingIds.length > 0) {
     message += `\n\n ${lastMissingIds.length} ID(s) not found on the website.`;
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
     copyBtn.style.display = "block"; // Show the copy button
   } else {
     copyBtn.style.display = "none"; // Hide copy button if no missing IDs
@@ -136,8 +105,4 @@ function updateStatus(message, type) {
   } else {
     statusContainer.style.color = "#333";
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 789a00e5f956a03c4a46b9aee371576f0e0caee3
